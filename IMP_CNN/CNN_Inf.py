@@ -1,0 +1,1 @@
+#Performs inference on a single image with trained CNN params
