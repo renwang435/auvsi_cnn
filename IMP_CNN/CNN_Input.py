@@ -8,14 +8,17 @@ from six.moves import xrange
 import tensorflow as tf
 
 #Define input image size in px (64x64)
-IMG_SIZE = 64
+#IMG_SIZE = 64
+IMG_SIZE = 24
 
 #Global constants based on dataset
 #Will likely have to change number of shape classes
 #Epoch constants used in CNN_Train and CNN_Eval
 NUM_CLASSES = 10
-NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 100
-NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 20
+#NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 100
+#NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 20
+NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
+NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
 def read_imgs(filename_queue):
     """
@@ -41,25 +44,31 @@ def read_imgs(filename_queue):
 
     #Dimensions of the image
     label_bytes = 1     #Note we will have to expand this if more than 10 classes
-    result.height = IMG_SIZE
-    result.width = IMG_SIZE
-    result.depth = 1
+    result.height = 32
+    result.width = 32
+    result.depth = 3
 
     image_bytes = result.height * result.width * result.depth
     record_bytes = label_bytes + image_bytes
 
+    # Read a record, getting filenames from the filename_queue
+    reader = tf.FixedLengthRecordReader(record_bytes=record_bytes)
+    result.key, value = reader.read(filename_queue)
+
+    # Convert from a string to a vector of uint8 that is record_bytes long.
+    record_bytes = tf.decode_raw(value, tf.uint8)
+
+
     #Convert the first byte to the label
     result.label = tf.cast(
-        tf.strided_slice(record_bytes, [0], [label_bytes], tf.int32)
-    )
+        tf.strided_slice(record_bytes, [0], [label_bytes]), tf.int32)
 
     #The remaining bytes after the label correspond to the image --> reshape
     #from [depth * height * width] to [depth, height, width]
     depth = tf.reshape(
         tf.strided_slice(
-            record_bytes, [label_bytes], [label_bytes + image_bytes], [result.depth, result.height, result.width]
+            record_bytes, [label_bytes], [label_bytes + image_bytes]), [result.depth, result.height, result.width]
         )
-    )
 
     #Convert [depth, height, width] to [height, width, depth]
     result.uint8image = tf.transpose(depth, [1, 2, 0])
@@ -140,7 +149,7 @@ def distorted_inputs(data_dir, batch_size):
     #Apply transformations to distort images
 
     #Randomly crop a [height, width] section of the image
-    distorted_image = tf.random_crop(reshaped_image, [height, width, 1])
+    distorted_image = tf.random_crop(reshaped_image, [height, width, 3])
 
     #Randomly flip the image horizontally
     distorted_image = tf.image.random_flip_left_right(distorted_image)
@@ -158,7 +167,7 @@ def distorted_inputs(data_dir, batch_size):
     float_image = tf.image.per_image_standardization(distorted_image)
 
     #Set shapes of tensors
-    float_image.set_shape([height, width, 1])
+    float_image.set_shape([height, width, 3])
     read_input.label.set_shape([1])
 
     #Ensure random shuffling of examples has good mixing properties
@@ -213,7 +222,7 @@ def inputs(eval_data, data_dir, batch_size):
     float_image = tf.image.per_image_standardization(reshaped_image)
 
     #Set shapes of tensors
-    float_image.set_shape([height, width, 1])
+    float_image.set_shape([height, width, 3])
     read_input.label.set_shape([1])
 
     #Ensure that random shuffling has good mixing properties

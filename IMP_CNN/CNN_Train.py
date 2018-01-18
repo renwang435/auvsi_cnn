@@ -14,6 +14,9 @@ parser = CNN_Arch.parser
 parser.add_argument('--train_dir', type=str, default='/tmp/CNN_Train',
                     help='Directory where to write event logs and checkpoint.')
 
+#parser.add_argument('--train_dir', type=str, default='/tmp/cifar10_train',
+#                    help='Directory where to write event logs and checkpoint.')
+
 parser.add_argument('--max_steps', type=int, default=1000000,
                     help='Number of batches to run.')
 
@@ -87,7 +90,7 @@ def train():
 def main(argv=None):  # pylint: disable=unused-argument
 
   #Need to input the data after Train_Preproc runs
-
+  CNN_Arch.gen_img_bin()
   if tf.gfile.Exists(FLAGS.train_dir):
     tf.gfile.DeleteRecursively(FLAGS.train_dir)
   tf.gfile.MakeDirs(FLAGS.train_dir)

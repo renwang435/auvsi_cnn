@@ -124,7 +124,7 @@ def evaluate():
 def main(argv=None):  # pylint: disable=unused-argument
 
   #Similar to CNN_Train, need data-dir of images to train/eval on
-
+  CNN_Arch.gen_img_bin()
   if tf.gfile.Exists(FLAGS.eval_dir):
     tf.gfile.DeleteRecursively(FLAGS.eval_dir)
   tf.gfile.MakeDirs(FLAGS.eval_dir)
