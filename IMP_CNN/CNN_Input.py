@@ -218,8 +218,13 @@ def inputs(eval_data, data_dir, batch_size):
     height = IMG_SIZE
     width = IMG_SIZE
 
+    # Image processing for evaluation.
+    # Crop the central [height, width] of the image.
+    resized_image = tf.image.resize_image_with_crop_or_pad(reshaped_image,
+                                                           height, width)
+
     #Subtract mean and divide by variance of pixels
-    float_image = tf.image.per_image_standardization(reshaped_image)
+    float_image = tf.image.per_image_standardization(resized_image)
 
     #Set shapes of tensors
     float_image.set_shape([height, width, 3])

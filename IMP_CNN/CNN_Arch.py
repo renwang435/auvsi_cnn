@@ -2,30 +2,16 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
-import os
-
 import tensorflow as tf
 
 import CNN_Input
+import Train_Preproc
 
-
-import sys
-import tarfile
-DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
-from six.moves import urllib
-
-parser = argparse.ArgumentParser()
+parser = Train_Preproc.parser
 
 # Basic model parameters.
 parser.add_argument('--batch_size', type=int, default=128,
                     help='Number of images to process in a batch.')
-
-parser.add_argument('--data_dir', type=str, default='/imgs/img_data',
-                    help='Path to the images directory.')
-
-#parser.add_argument('--data_dir', type=str, default='/tmp/cifar10_data',
-#                    help='Path to the CIFAR-10 data directory.')
 
 parser.add_argument('--use_fp16', type=bool, default=False,
                     help='Train the model using fp16.')
@@ -96,8 +82,7 @@ def distorted_inputs():
 
     if not FLAGS.data_dir:
         raise ValueError('Please supply a data_dir')
-    #data_dir = os.path.join(FLAGS.data_dir, 'imgs-batches-bin')
-    data_dir = os.path.join(FLAGS.data_dir, 'cifar-10-batches-bin')
+    data_dir = FLAGS.data_dir
     images, labels = CNN_Input.distorted_inputs(data_dir=data_dir,
                                                     batch_size=FLAGS.batch_size)
     if FLAGS.use_fp16:
@@ -120,8 +105,7 @@ def inputs(eval_data):
 
     if not FLAGS.data_dir:
         raise ValueError('Please supply a data_dir')
-    data_dir = os.path.join(FLAGS.data_dir, 'cifar-10-batches-bin')
-    #data_dir = os.path.join(FLAGS.data_dir, 'imgs-batches-bin')
+    data_dir = FLAGS.data_dir
     images, labels = CNN_Input.inputs(eval_data=eval_data,
                                           data_dir=data_dir,
                                           batch_size=FLAGS.batch_size)
@@ -310,33 +294,3 @@ def train(total_loss, global_step):
         train_op = tf.no_op(name='train')
 
     return train_op
-
-def gen_img_bin():
-    """
-    Function to create initialized Variable with weight decay
-    Args:
-        img_dir: Directory of images in JPEG format
-        data_dir: Directory where training/eval data will be written to
-    Return:
-        None
-    """
-    """Download and extract the tarball from Alex's website."""
-    dest_directory = FLAGS.data_dir
-    if not os.path.exists(dest_directory):
-        os.makedirs(dest_directory)
-    filename = DATA_URL.split('/')[-1]
-    filepath = os.path.join(dest_directory, filename)
-    if not os.path.exists(filepath):
-        def _progress(count, block_size, total_size):
-            sys.stdout.write('\r>> Downloading %s %.1f%%' % (filename,
-                                                             float(count * block_size) / float(total_size) * 100.0))
-            sys.stdout.flush()
-
-        filepath, _ = urllib.request.urlretrieve(DATA_URL, filepath, _progress)
-        print()
-        statinfo = os.stat(filepath)
-        print('Successfully downloaded', filename, statinfo.st_size, 'bytes.')
-    #extracted_dir_path = os.path.join(dest_directory, 'imgs-batches-bin')
-    extracted_dir_path = os.path.join(dest_directory, 'cifar-10-batches-bin')
-    if not os.path.exists(extracted_dir_path):
-        tarfile.open(filepath, 'r:gz').extractall(dest_directory)

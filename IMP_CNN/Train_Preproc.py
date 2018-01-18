@@ -6,27 +6,28 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from datetime import datetime
-import time
-
 import argparse
-import os
-import re
-import sys
-import tarfile
-from six.moves import urllib
-
-import CNN_Arch
-
-DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--data_dir', type=str, default='/tmp/img_data',
+parser.add_argument('--img_dir', type=str, default='./raw-imgs/',
                     help='Path to the images directory.')
 
-#Takes as input a directory of training images, converts images to the CIFAR10 binary format
+parser.add_argument('--data_dir', type=str, default='./training-batches-bin/',
+                    help='Path to the output data directory.')
 
+FLAGS = parser.parse_args()
+
+def gen_img_bin():
+    """
+    Function to create initialized Variable with weight decay
+    Args:
+        img_dir: Directory of images in JPEG format
+        data_dir: Directory where training/eval data will be written to
+    Return:
+        None
+    """
+    pass
 
 def preproc():
     pass

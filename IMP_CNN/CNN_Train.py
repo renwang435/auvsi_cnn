@@ -8,14 +8,12 @@ import time
 import tensorflow as tf
 
 import CNN_Arch
+import Train_Preproc
 
-parser = CNN_Arch.parser
+parser = Train_Preproc.parser
 
-parser.add_argument('--train_dir', type=str, default='/tmp/CNN_Train',
+parser.add_argument('--train_dir', type=str, default='./CNN_Train',
                     help='Directory where to write event logs and checkpoint.')
-
-#parser.add_argument('--train_dir', type=str, default='/tmp/cifar10_train',
-#                    help='Directory where to write event logs and checkpoint.')
 
 parser.add_argument('--max_steps', type=int, default=1000000,
                     help='Number of batches to run.')
@@ -31,7 +29,7 @@ def train():
   """Train the model for specified a number of steps."""
 
   with tf.Graph().as_default():
-    global_step = tf.contrib.framework.get_or_create_global_step()
+    global_step = tf.train.get_or_create_global_step()
 
     # Get images and labels
     # Force input pipeline to CPU:0 to avoid operations sometimes ending up on
@@ -90,7 +88,7 @@ def train():
 def main(argv=None):  # pylint: disable=unused-argument
 
   #Need to input the data after Train_Preproc runs
-  CNN_Arch.gen_img_bin()
+  Train_Preproc.gen_img_bin()
   if tf.gfile.Exists(FLAGS.train_dir):
     tf.gfile.DeleteRecursively(FLAGS.train_dir)
   tf.gfile.MakeDirs(FLAGS.train_dir)

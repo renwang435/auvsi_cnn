@@ -13,13 +13,13 @@ import CNN_Arch
 
 parser = CNN_Arch.parser
 
-parser.add_argument('--eval_dir', type=str, default='/tmp/CNN_Eval',
+parser.add_argument('--eval_dir', type=str, default='./CNN_Eval',
                     help='Directory where to write event logs.')
 
 parser.add_argument('--eval_data', type=str, default='test',
                     help='Either `test` or `train_eval`.')
 
-parser.add_argument('--checkpoint_dir', type=str, default='/tmp/CNN_Train',
+parser.add_argument('--checkpoint_dir', type=str, default='./CNN_Train',
                     help='Directory where to read model checkpoints.')
 
 parser.add_argument('--eval_interval_secs', type=int, default=60*5,
