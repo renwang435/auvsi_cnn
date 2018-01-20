@@ -10,13 +10,14 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument('--preproc', type=bool, default=False,
+                    help='Whether or not to pre-process images.')
+
 parser.add_argument('--img_dir', type=str, default='./raw-imgs/',
                     help='Path to the images directory.')
 
 parser.add_argument('--data_dir', type=str, default='./training-batches-bin/',
                     help='Path to the output data directory.')
-
-FLAGS = parser.parse_args()
 
 def gen_img_bin():
     """

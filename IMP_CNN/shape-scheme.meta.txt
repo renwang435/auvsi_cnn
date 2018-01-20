@@ -1,0 +1,10 @@
+square
+rectangle
+diamond
+circle
+triangle
+trapezoid
+semi-circle
+quarter-circle
+cross
+star

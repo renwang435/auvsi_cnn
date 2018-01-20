@@ -6,11 +6,11 @@ from datetime import datetime
 import time
 
 import tensorflow as tf
+import numpy as np
 
 import CNN_Arch
-import Train_Preproc
 
-parser = Train_Preproc.parser
+parser = CNN_Arch.parser
 
 parser.add_argument('--train_dir', type=str, default='./CNN_Train',
                     help='Directory where to write event logs and checkpoint.')
@@ -23,7 +23,6 @@ parser.add_argument('--log_device_placement', type=bool, default=False,
 
 parser.add_argument('--log_frequency', type=int, default=10,
                     help='How often to log results to the console.')
-
 
 def train():
   """Train the model for specified a number of steps."""
@@ -39,7 +38,7 @@ def train():
 
     # Build a Graph that computes the logits predictions from the
     # inference model.
-    logits = CNN_Arch.inference(images)
+    logits = CNN_Arch.inference_eval(images)
 
     # Calculate loss.
     loss = CNN_Arch.loss(logits, labels)
@@ -82,13 +81,12 @@ def train():
         config=tf.ConfigProto(
             log_device_placement=FLAGS.log_device_placement)) as mon_sess:
       while not mon_sess.should_stop():
-        mon_sess.run(train_op)
+          mon_sess.run(train_op)
 
 
 def main(argv=None):  # pylint: disable=unused-argument
 
   #Need to input the data after Train_Preproc runs
-  Train_Preproc.gen_img_bin()
   if tf.gfile.Exists(FLAGS.train_dir):
     tf.gfile.DeleteRecursively(FLAGS.train_dir)
   tf.gfile.MakeDirs(FLAGS.train_dir)

@@ -98,7 +98,7 @@ def evaluate():
 
     # Build a Graph that computes the logits predictions from the
     # inference model.
-    logits = CNN_Arch.inference(images)
+    logits = CNN_Arch.inference_eval(images)
 
     # Calculate predictions.
     top_k_op = tf.nn.in_top_k(logits, labels, 1)
@@ -124,7 +124,6 @@ def evaluate():
 def main(argv=None):  # pylint: disable=unused-argument
 
   #Similar to CNN_Train, need data-dir of images to train/eval on
-  CNN_Arch.gen_img_bin()
   if tf.gfile.Exists(FLAGS.eval_dir):
     tf.gfile.DeleteRecursively(FLAGS.eval_dir)
   tf.gfile.MakeDirs(FLAGS.eval_dir)
