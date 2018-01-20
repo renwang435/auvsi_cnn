@@ -1,0 +1,3 @@
+To run inference, use the script CNN_Inf.py
+
+The folders CNN_Train and batches.meta.txt, as well as the image you want to run inference on, should be located in the same directory as CNN_INF.py. THis will eventually be adapted to be able to more dynamically handle directories and image paths. For now, if you want to test different images, just edit the default img_path in the opening argparse arguments for CNN_INF.py
