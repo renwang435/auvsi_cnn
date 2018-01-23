@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--meta_path', type=str, default='./batches.meta.txt',
                     help='Path to txt file containing a class on each line')
 
-parser.add_argument('--img_path', type=str, default='./test.jpg',
+parser.add_argument('--img_path', type=str, default='./test_images/test4.jpg',
                     help='Path to image to run inference on')
 
 parser.add_argument('--train_dir', type=str, default='./CNN_Train',
@@ -19,7 +19,7 @@ parser.add_argument('--train_dir', type=str, default='./CNN_Train',
 
 infFLAGS = parser.parse_args()
 
-def restore_vars(saver, sess, chkpt_dir):
+def restore_vars(saver, sess):
     """ Restore saved net, global score and step, and epsilons OR
     create checkpoint directory for later storage. """
     sess.run(tf.global_variables_initializer())
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
         with tf.Session() as sess:
             if to_restore:
-                restored = restore_vars(saver, sess, infFLAGS.train_dir)
+                restored = restore_vars(saver, sess)
                 to_restore = False
 
             _, top_k_pred = tf.nn.top_k(logits, k=5)
@@ -81,8 +81,8 @@ if __name__ == '__main__':
             top_pred = top_indices[0][0][0]
             dict = load_meta()
 
+            print(top_indices)
             print("Predicted ", dict[top_pred], " for your input image.")
-            #print(infFLAGS.train_dir)
 
 
 
