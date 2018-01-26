@@ -206,7 +206,7 @@ def inputs(eval_data, data_dir, batch_size):
 
     for f in filenames:
         if not tf.gfile.Exists(f):
-            raise ValueError('FIle Not Found: ' + f)
+            raise ValueError('File Not Found: ' + f)
 
     #Create queue which we populate with image filenames to read
     filename_queue = tf.train.string_input_producer(filenames)

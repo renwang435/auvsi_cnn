@@ -16,6 +16,9 @@ parser.add_argument('--batch_size', type=int, default=128,
 parser.add_argument('--use_fp16', type=bool, default=False,
                     help='Train the model using fp16.')
 
+parser.add_argument('--data_dir', type=str, default='./training-batches-bin',
+                    help='Relative directory to training data directory')
+
 FLAGS = parser.parse_args()
 
 # Global constants describing the dataset

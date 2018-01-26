@@ -3,15 +3,18 @@ import argparse
 import tensorflow as tf
 import numpy as np
 import cv2
+from PIL import Image
+from matplotlib import pyplot as plt
 
 import CNN_Arch
+from CNN_Input import IMG_SIZE
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--meta_path', type=str, default='./batches.meta.txt',
                     help='Path to txt file containing a class on each line')
 
-parser.add_argument('--img_path', type=str, default='./test_images/test4.jpg',
+parser.add_argument('--img_path', type=str, default='./test_images/test3.jpg',
                     help='Path to image to run inference on')
 
 parser.add_argument('--train_dir', type=str, default='./CNN_Train',
@@ -54,20 +57,23 @@ if __name__ == '__main__':
     with tf.Graph().as_default():
 
         # Gets the image
-        images = cv2.imread(infFLAGS.img_path)
+        raw_image = cv2.imread(infFLAGS.img_path)
 
-        images = np.asarray(images, dtype=np.float32)
-        images = tf.convert_to_tensor(images / 255.0)
-        images = tf.image.resize_image_with_crop_or_pad(images, 24, 24)
-        images = tf.reshape(images, [1, 24, 24, 3])
-        images = tf.cast(images, tf.float32)
+        inf_image = np.asarray(raw_image, dtype=np.float32)
+        reshaped_image = tf.convert_to_tensor(inf_image)
+        resized_image = tf.image.resize_image_with_crop_or_pad(reshaped_image,
+                                                               IMG_SIZE, IMG_SIZE)
+        float_image = tf.image.per_image_standardization(resized_image)
+        proc_image = tf.reshape(float_image, [1, IMG_SIZE, IMG_SIZE, 3])
+
+        #disp_image = tf.reshape(proc_image, [IMG_SIZE, IMG_SIZE, 3])
 
         with tf.variable_scope(tf.get_variable_scope()) as scope:
             if to_restore:
-                logits = CNN_Arch.inference(images)
+                logits = CNN_Arch.inference(proc_image)
             else:
                 scope.reuse_variables()
-                logits = CNN_Arch.inference(images)
+                logits = CNN_Arch.inference(proc_image)
 
         saver = tf.train.Saver()
 

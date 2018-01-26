@@ -22,7 +22,7 @@ parser.add_argument('--eval_data', type=str, default='test',
 parser.add_argument('--checkpoint_dir', type=str, default='./CNN_Train',
                     help='Directory where to read model checkpoints.')
 
-parser.add_argument('--eval_interval_secs', type=int, default=60*5,
+parser.add_argument('--eval_interval_secs', type=int, default=15,
                     help='How often to run the eval.')
 
 parser.add_argument('--num_examples', type=int, default=10000,
